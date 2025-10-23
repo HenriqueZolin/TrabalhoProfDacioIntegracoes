@@ -145,11 +145,11 @@ class TestBook(unittest.TestCase):
         )
 
         
-        livro_alterado = next(l for l in livros if l.isbn == "0987654321")
+        livro_alterado = next(l for l in livros if l.ISBN == "0987654321")
         self.assertEqual(livro_alterado.titulo, "Livro 2 - Edição Atualizada")
         self.assertEqual(livro_alterado.autores, ["Autor 2", "Autor Extra"])
         self.assertEqual(livro_alterado.ano, 2010)
-        self.assertEqual(livro_alterado.quantidade, 5)
+        self.assertEqual(livro_alterado.copiasDisponiveis, 5)
 
     def test_alterar_livro_inexistente(self):
         
