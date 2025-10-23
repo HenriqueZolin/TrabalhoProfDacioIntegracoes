@@ -1,4 +1,4 @@
-# catalogo.py
+# catalogo.py (VERSÃO REFATORADA)
 from dataclasses import dataclass, field
 from typing import List, Optional, Literal
 
@@ -12,7 +12,12 @@ class Livro:
     copiasDisponiveis: int
     isbn: Optional[str] = None 
     edicao: Optional[str] = None 
-    status: Literal["DISPONIVEL", "INDISPONIVEL"] = "DISPONIVEL" # Versão simples
+
+    # --- REFATORAÇÃO 1: Status dinâmico ---
+    # (O status agora é calculado, não armazenado)
+    @property
+    def status(self) -> Literal["DISPONIVEL", "INDISPONIVEL"]:
+        return "DISPONIVEL" if self.copiasDisponiveis > 0 else "INDISPONIVEL"
 
 
 class Catalogo:
@@ -20,12 +25,30 @@ class Catalogo:
         self._livros: List[Livro] = []
         self._next_book_id: int = 1
 
-    def adicionar_livro(self, titulo: str, autores: List[str], ano: int, copiasTotal: int, copiasDisponiveis: int, isbn: Optional[str] = None, edicao: Optional[str] = None):
-        """
-        Versão SIMPLES para fazer o teste passar.
-        """
-        status_livro = "DISPONIVEL" if copiasDisponiveis > 0 else "INDISPONIVEL"
+    def _validar_isbn_unico(self, isbn: Optional[str]):
+        """Método auxiliar para checar unicidade do ISBN"""
+        if isbn is None: return True
+        for livro in self._livros:
+            if livro.isbn == isbn:
+                raise ValueError(f"ISBN {isbn} já existe no catálogo.")
+        return True
 
+    def adicionar_livro(self, titulo: str, autores: List[str], ano: int, copiasTotal: int, copiasDisponiveis: int, isbn: Optional[str] = None, edicao: Optional[str] = None):
+
+        # --- REFATORAÇÃO 2: Validações de dados (excelência) ---
+        if not (1 <= len(titulo) <= 200):
+            raise ValueError("Título deve ter entre 1 e 200 caracteres")
+        if not autores or any(not (1 <= len(autor) <= 100) for autor in autores):
+            raise ValueError("Autores devem ser listados e ter entre 1 e 100 caracteres")
+        if isbn:
+            if len(isbn) not in [10, 13]:
+                raise ValueError("ISBN deve ter 10 ou 13 caracteres")
+            self._validar_isbn_unico(isbn)
+        if copiasTotal < 0 or copiasDisponiveis < 0 or copiasDisponiveis > copiasTotal:
+            raise ValueError("Número de cópias inválido")
+        # --- Fim da Refatoração 2 ---
+
+        # (Note que 'status' não é mais passado no construtor do Livro)
         novo_livro = Livro(
             bookId=self._next_book_id,
             titulo=titulo,
@@ -34,8 +57,7 @@ class Catalogo:
             copiasTotal=copiasTotal,
             copiasDisponiveis=copiasDisponiveis,
             isbn=isbn,
-            edicao=edicao,
-            status=status_livro
+            edicao=edicao
         )
 
         self._livros.append(novo_livro)
@@ -43,7 +65,4 @@ class Catalogo:
         return novo_livro
 
     def listar_livros(self) -> List[Livro]:
-        """
-        Funcionalidade 4 - Lstar (RAFAEL)
-        """
         return self._livros
