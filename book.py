@@ -16,5 +16,5 @@ class Book:
         self.status = "DISPONIVEL" if copiasDisponiveis > 0 else "INDISPONIVEL"
 
     def adicionarLivro(titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis):
-        return
+        return Book(titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis)
     
