@@ -128,6 +128,40 @@ class TestBook(unittest.TestCase):
         self.assertEqual(livro.copiasDisponiveis, 1)
         self.assertEqual(livro.status, "DISPONIVEL")
 
+    def test_alterar_livro(self):
+        
+        livro1 = Book.adicionarLivro("Livro 1", ["Autor 1"], "1234567890", 2000, 3, 3)
+        livro2 = Book.adicionarLivro("Livro 2", ["Autor 2"], "0987654321", 2005, 2, 2)
+        livros = [livro1, livro2]
+
+        
+        livros = Book.alterarLivro(
+            livros, 
+            isbn="0987654321", 
+            novo_titulo="Livro 2 - Edição Atualizada", 
+            novos_autores=["Autor 2", "Autor Extra"], 
+            novo_ano=2010, 
+            nova_quantidade=5
+        )
+
+        
+        livro_alterado = next(l for l in livros if l.isbn == "0987654321")
+        self.assertEqual(livro_alterado.titulo, "Livro 2 - Edição Atualizada")
+        self.assertEqual(livro_alterado.autores, ["Autor 2", "Autor Extra"])
+        self.assertEqual(livro_alterado.ano, 2010)
+        self.assertEqual(livro_alterado.quantidade, 5)
+
+    def test_alterar_livro_inexistente(self):
+        
+        livro = Book.adicionarLivro("Livro Único", ["Autor X"], "1234567890", 1999, 1, 1)
+        livros = [livro]
+
+        
+        with self.assertRaises(ValueError) as context:
+            Book.alterarLivro(livros, isbn="0000000000", novo_titulo="Novo Título")
+        self.assertEqual(str(context.exception), "Livro não encontrado para alteração")
+
+
 
 if __name__ == '__main__':
     unittest.main()
