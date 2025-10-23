@@ -48,3 +48,20 @@ class Book:
 
         nova_lista = [livro for livro in listaLivros if livro.ISBN != isbn]
         return nova_lista
+#opaopdkaospkdpoaskdas
+    @staticmethod
+    def listarLivros(listaLivros):
+        # Validação de entrada
+        if not isinstance(listaLivros, list):
+            raise ValueError("A lista de livros deve ser uma lista válida")
+
+        # Usando List Comprehension para formatar a saída
+        return [
+            (
+                f"ID: {livro.bookId}, Título: {livro.titulo}, "
+                f"Autores: {', '.join(livro.autores)}, ISBN: {livro.ISBN}, "
+                f"Status: {livro.status}"
+            ) # O parêntese da string formatada fecha aqui
+            # A linha extra com ')' foi removida
+            for livro in listaLivros
+        ] # O colchete da lista fecha aqui
