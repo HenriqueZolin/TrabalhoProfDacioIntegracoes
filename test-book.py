@@ -1,4 +1,5 @@
 import unittest
+import itertools
 from book import Book  # Assuming the Book class is defined in book_module.py
 
 class TestBook(unittest.TestCase):
@@ -54,7 +55,61 @@ class TestBook(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             Book.removerLivro(livros, "0000000000")
         self.assertEqual(str(context.exception), "Livro não encontrado para remoção")
+#RAFAEL TUDELA
+    def setUp(self):
+       
+        Book.id_iter = itertools.count()
 
+    def test_listar_livros_lista_vazia(self):
+        livros = []
+        resultado = Book.listarLivros(livros)
+        self.assertEqual(resultado, [])
+
+    def test_listar_livros_com_um_livro(self):
+        
+        livro = Book.adicionarLivro("O Hobbit", ["J.R.R. Tolkien"], "1234567890", 1937, 2, 2)
+        livros = [livro]
+        resultado = Book.listarLivros(livros)
+        
+        expected_output = [
+            "ID: 0, Título: O Hobbit, Autores: J.R.R. Tolkien, ISBN: 1234567890, Status: DISPONIVEL"
+        ]
+        self.assertEqual(resultado, expected_output)
+        
+    def test_listar_livros_multiplos(self):
+       
+        livro1 = Book.adicionarLivro("O Hobbit", ["J.R.R. Tolkien"], "1234567890", 1937, 2, 2)
+        livro2 = Book.adicionarLivro(
+            "O Nome do Vento", 
+            ["Patrick Rothfuss"], 
+            "9876543210", 
+            2007, 
+            1, 
+            0 
+        )
+        livro3 = Book.adicionarLivro(
+            "Good Omens", 
+            ["Terry Pratchett", "Neil Gaiman"],
+            "5555555555", 
+            1990, 
+            5, 
+            5
+        )
+        livros = [livro1, livro2, livro3]
+        resultado = Book.listarLivros(livros)
+
+        expected_output = [
+            "ID: 0, Título: O Hobbit, Autores: J.R.R. Tolkien, ISBN: 1234567890, Status: DISPONIVEL",
+            "ID: 1, Título: O Nome do Vento, Autores: Patrick Rothfuss, ISBN: 9876543210, Status: INDISPONIVEL",
+            "ID: 2, Título: Good Omens, Autores: Terry Pratchett, Neil Gaiman, ISBN: 5555555555, Status: DISPONIVEL"
+        ]
+        self.assertEqual(resultado, expected_output)
+
+    def test_listar_livros_input_invalido(self):
+        
+        with self.assertRaises(ValueError) as context:
+            Book.listarLivros("não sou uma lista")
+        self.assertEqual(str(context.exception), "A lista de livros deve ser uma lista válida")
 
 if __name__ == '__main__':
     unittest.main()
