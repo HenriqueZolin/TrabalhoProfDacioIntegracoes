@@ -40,5 +40,11 @@ class Book:
 
     @staticmethod
     def removerLivro(listaLivros, isbn):
+        if not isinstance(listaLivros, list):
+            raise ValueError("A lista de livros deve ser uma lista válida")
+
+        if not any(livro.ISBN == isbn for livro in listaLivros):
+            raise ValueError("Livro não encontrado para remoção")
+
         nova_lista = [livro for livro in listaLivros if livro.ISBN != isbn]
         return nova_lista
