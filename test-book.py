@@ -44,11 +44,7 @@ class TestBook(unittest.TestCase):
                 "", ["J.R.R. Tolkien"], "978-3-16-148410-0", 1954, 5, 3
             )
         self.assertEqual(str(context.exception), "Título inválido")
-    
 
-    # --------------------------
-    #  Rafael Gebara- função removerLivro
-    # --------------------------
     def test_remover_livro(self):
      
         livros = [self.livro1, self.livro2]
@@ -63,9 +59,6 @@ class TestBook(unittest.TestCase):
             Book.removerLivro(livros, "0000000000")
         self.assertEqual(str(context.exception), "Livro não encontrado para remoção")
 
-    # --------------------------
-    #  Rafael Tudela - função listarLivros
-    # --------------------------
     def test_listar_livros_lista_vazia(self):
         livros = []
         resultado = Book.listarLivros(livros)
@@ -95,6 +88,46 @@ class TestBook(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             Book.listarLivros("não sou uma lista")
         self.assertEqual(str(context.exception), "A lista de livros deve ser uma lista válida")
+
+    def test_emprestar_livro_deve_reduzir_copia_e_mudar_status(self):
+        """
+        Deve reduzir 1 cópia disponível e mudar status para INDISPONIVEL quando chegar a 0.
+        """
+        livro = Book.adicionarLivro(
+            "Livro Emprestável",
+            ["Autor TDD"],
+            "9783161484100",
+            2023,
+            2,
+            1
+        )
+
+        # Espera-se que o método emprestarLivro reduza copiasDisponiveis e atualize status
+        livro.emprestarLivro()
+
+        self.assertEqual(livro.copiasDisponiveis, 0)
+        self.assertEqual(livro.status, "INDISPONIVEL")
+
+
+    def test_devolver_livro_deve_aumentar_copia_e_mudar_status(self):
+        """
+        Deve aumentar 1 cópia disponível e mudar status para DISPONIVEL quando devolver.
+        """
+        livro = Book.adicionarLivro(
+            "Livro Devolvido",
+            ["Autor TDD"],
+            "9783161484101",
+            2022,
+            2,
+            0
+        )
+
+        # Espera-se que o método devolverLivro aumente copiasDisponiveis e atualize status
+        livro.devolverLivro()
+
+        self.assertEqual(livro.copiasDisponiveis, 1)
+        self.assertEqual(livro.status, "DISPONIVEL")
+
 
 if __name__ == '__main__':
     unittest.main()
