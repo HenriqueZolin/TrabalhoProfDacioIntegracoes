@@ -57,7 +57,7 @@ class Book:
 
         # Usando List Comprehension para formatar a saída
         return [
-            (
+            (   
                 f"ID: {livro.bookId}, Título: {livro.titulo}, "
                 f"Autores: {', '.join(livro.autores)}, ISBN: {livro.ISBN}, "
                 f"Status: {livro.status}"
