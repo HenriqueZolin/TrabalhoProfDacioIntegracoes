@@ -25,7 +25,7 @@ class Book:
 
         isbn_limpo = isbn.replace("-", "")
         if len(isbn_limpo) not in (10, 13):
-             raise ValueError("ISBN inválido")
+            raise ValueError("ISBN inválido")
 
         if not isinstance(ano, int):
             raise ValueError("Ano inválido")
@@ -37,3 +37,8 @@ class Book:
             raise ValueError("Número de cópias disponíveis inválido")
 
         return Book(titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis)
+
+    @staticmethod
+    def removerLivro(listaLivros, isbn):
+        nova_lista = [livro for livro in listaLivros if livro.ISBN != isbn]
+        return nova_lista
