@@ -51,15 +51,35 @@ class Book:
 
     @staticmethod
     def listarLivros(listaLivros):
-        # Validação de entrada
         if not isinstance(listaLivros, list):
             raise ValueError("A lista de livros deve ser uma lista válida")
         
         return [
-            (   
+            (
                 f"ID: {livro.bookId}, Título: {livro.titulo}, "
                 f"Autores: {', '.join(livro.autores)}, ISBN: {livro.ISBN}, "
                 f"Status: {livro.status}"
             )
             for livro in listaLivros
-        ] 
+        ]
+
+    # ------------------------------------------------
+    # Novas funcionalidades (TDD Green)
+    # ------------------------------------------------
+    def emprestarLivro(self):
+        """Reduz 1 cópia disponível e atualiza o status."""
+        if self.copiasDisponiveis <= 0:
+            raise ValueError("Não há cópias disponíveis para empréstimo.")
+        
+        self.copiasDisponiveis -= 1
+        if self.copiasDisponiveis == 0:
+            self.status = "INDISPONIVEL"
+
+    def devolverLivro(self):
+        """Aumenta 1 cópia disponível e atualiza o status."""
+        if self.copiasDisponiveis >= self.copiasTotal:
+            raise ValueError("Todas as cópias já estão disponíveis.")
+        
+        self.copiasDisponiveis += 1
+        if self.copiasDisponiveis > 0:
+            self.status = "DISPONIVEL"
