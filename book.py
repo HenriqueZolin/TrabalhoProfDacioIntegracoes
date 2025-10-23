@@ -1,7 +1,6 @@
 import itertools
 
 class Book:
-
     id_iter = itertools.count()
 
     def __init__(self, titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis):
@@ -15,26 +14,26 @@ class Book:
         self.copiasDisponiveis = copiasDisponiveis
         self.status = "DISPONIVEL" if copiasDisponiveis > 0 else "INDISPONIVEL"
 
+    @staticmethod
     def adicionarLivro(titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis):
-        if(titulo.len() == 0 or titulo.len > 200):
-            raise ValueError("Título inválido") 
-        
-        else:
-            for autor in autores:
-                if(autor.len() == 0 or autor.len() > 100):
-                    raise ValueError("Autor inválido")
-            
-            if(len(isbn) != 10 or len(isbn) != 13):
-                raise ValueError("ISBN inválido")
-        
-            elif(not isinstance(ano, int)):
-                raise ValueError("Ano inválido")
-        
-            elif(copiasTotal < 0):
-                raise ValueError("Número total de cópias inválido")
-            
-            elif(copiasDisponiveis < 0 or copiasDisponiveis > copiasTotal):
-                raise ValueError("Número de cópias disponíveis inválido")
+        if len(titulo) == 0 or len(titulo) > 200:
+            raise ValueError("Título inválido")
+
+        for autor in autores:
+            if len(autor) == 0 or len(autor) > 100:
+                raise ValueError("Autor inválido")
+
+        isbn_limpo = isbn.replace("-", "")
+        if len(isbn_limpo) not in (10, 13):
+             raise ValueError("ISBN inválido")
+
+        if not isinstance(ano, int):
+            raise ValueError("Ano inválido")
+
+        if copiasTotal < 0:
+            raise ValueError("Número total de cópias inválido")
+
+        if copiasDisponiveis < 0 or copiasDisponiveis > copiasTotal:
+            raise ValueError("Número de cópias disponíveis inválido")
 
         return Book(titulo, autores, isbn, ano, copiasTotal, copiasDisponiveis)
-    
