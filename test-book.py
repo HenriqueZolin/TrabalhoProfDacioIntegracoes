@@ -20,6 +20,18 @@ class TestBook(unittest.TestCase):
         self.assertEqual(livro.copiasTotal, 5)
         self.assertEqual(livro.copiasDisponiveis, 3)
         self.assertEqual(livro.status, "DISPONIVEL")
+
+    def test_criar_livro_titulo_invalido(self):
+        with self.assertRaises(ValueError) as context:
+            Book.adicionarLivro(
+                "",
+                ["J.R.R. Tolkien"],
+                "978-3-16-148410-0",
+                1954,
+                5,
+                3
+            )
+        self.assertEqual(str(context.exception), "Título inválido")
     
 
 if __name__ == '__main__':
