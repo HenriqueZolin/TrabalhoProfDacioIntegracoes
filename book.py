@@ -103,65 +103,38 @@ class Book:
     @staticmethod
     def alterarLivro(listaLivros, isbn, novo_titulo=None, novos_autores=None, novo_ano=None, nova_quantidade=None):
         """Altera os dados de um livro existente na lista com base no ISBN."""
+
         if not isinstance(listaLivros, list):
             raise ValueError("A lista de livros deve ser uma lista válida")
 
-        # Buscar o livro pelo ISBN
-        livro_encontrado = next((livro for livro in listaLivros if livro.ISBN == isbn), None)
-
-        if not livro_encontrado:
+        # Busca o livro pelo ISBN
+        livro = next((l for l in listaLivros if l.ISBN == isbn), None)
+        if not livro:
             raise ValueError("Livro não encontrado para alteração")
 
-        # Atualiza título, se informado
+        # Atualiza atributos se foram fornecidos
         if novo_titulo is not None:
             Book._validar_titulo(novo_titulo)
-            livro_encontrado.titulo = novo_titulo
-
-        # Atualiza autores, se informado
-        if novos_autores is not None:
-            Book._validar_autores(novos_autores)
-            livro_encontrado.autores = novos_autores
-
-        # Atualiza ano, se informado
-        if novo_ano is not None:
-            Book._validar_ano(novo_ano)
-            livro_encontrado.ano = novo_ano
-
-        # Atualiza estoque, se informado
-        if nova_quantidade is not None:
-            Book._validar_estoque(nova_quantidade, livro_encontrado.copiasDisponiveis)
-
-            # Se nova quantidade for maior, todas as cópias ficam disponíveis
-            if nova_quantidade > livro_encontrado.copiasTotal:
-                livro_encontrado.copiasDisponiveis = nova_quantidade
-            else:
-                # Garante que disponíveis nunca excedam o total
-                livro_encontrado.copiasDisponiveis = min(livro_encontrado.copiasDisponiveis, nova_quantidade)
-
-            livro_encontrado.copiasTotal = nova_quantidade
-            livro_encontrado._atualizar_status()
-
-        return listaLivros
-
-
-        # Aplica alterações somente nos campos informados
-        if novo_titulo is not None:
-            Book._validar_titulo(novo_titulo)
-            livro_encontrado.titulo = novo_titulo
+            livro.titulo = novo_titulo
 
         if novos_autores is not None:
             Book._validar_autores(novos_autores)
-            livro_encontrado.autores = novos_autores
+            livro.autores = novos_autores
 
         if novo_ano is not None:
             Book._validar_ano(novo_ano)
-            livro_encontrado.ano = novo_ano
+            livro.ano = novo_ano
 
         if nova_quantidade is not None:
-            # Ajusta total e disponíveis proporcionalmente, se necessário
-            if nova_quantidade < livro_encontrado.copiasDisponiveis:
-                livro_encontrado.copiasDisponiveis = nova_quantidade
-            livro_encontrado.copiasTotal = nova_quantidade
-            livro_encontrado._atualizar_status()
+            # Valida e atualiza o estoque
+            Book._validar_estoque(nova_quantidade, livro.copiasDisponiveis)
+
+            # Atualiza o total de cópias
+            livro.copiasTotal = nova_quantidade
+
+            # Ajusta disponíveis: se aumentar total, todas ficam disponíveis
+            livro.copiasDisponiveis = max(livro.copiasDisponiveis, nova_quantidade)
+
+            livro._atualizar_status()
 
         return listaLivros
