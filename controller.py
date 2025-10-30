@@ -1,4 +1,4 @@
-from Model.Book import Book
+from Model.book import Book
 
 class Controler:
     def __init__(self):
